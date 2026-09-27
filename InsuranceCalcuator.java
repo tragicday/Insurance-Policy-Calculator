@@ -1,42 +1,67 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class InsuranceCalcuator
 {
     public static void main(String[] args)
     {
-        Scanner keyboard = new Scanner(System.in);
+        ArrayList<Policy> policies = new ArrayList<Policy>();
 
+        try
         {
-            Policy policy = new Policy();
+            Scanner inputFile = new Scanner(new File("PolicyInformation.txt"));
 
-            System.out.print("Please enter the policy number: ");
-            policy.setPolicyNumber(keyboard.nextLine());
+            while (inputFile.hasNextLine())
+            {
+                String policyNumberLine = inputFile.nextLine();
 
-            System.out.print("Please enter the provider name: ");
-            policy.setProviderName(keyboard.nextLine());
+                while (policyNumberLine.equals("") && inputFile.hasNextLine())
+                {
+                    policyNumberLine = inputFile.nextLine();
+                }
 
-            System.out.print("Please enter the policyholder's first name: ");
-            policy.setFirstName(keyboard.nextLine());
+                if (!policyNumberLine.equals(""))
+                {
+                    Policy policy = new Policy();
 
-            System.out.print("Please enter the policyholder's last name: ");
-            policy.setLastName(keyboard.nextLine());
+                    policy.setPolicyNumber(policyNumberLine);
+                    policy.setProviderName(inputFile.nextLine());
+                    policy.setFirstName(inputFile.nextLine());
+                    policy.setLastName(inputFile.nextLine());
+                    policy.setAge(inputFile.nextInt());
 
-            System.out.print("Please enter the policyholder's age: ");
-            policy.setAge(keyboard.nextInt());
+                    if (inputFile.hasNextLine())
+                    {
+                        inputFile.nextLine();
+                    }
 
-            keyboard.nextLine(); 
+                    policy.setSmokingStatus(inputFile.nextLine());
+                    policy.setHeight(inputFile.nextDouble());
+                    policy.setWeight(inputFile.nextDouble());
 
-            System.out.print("Is the policyholder a smoker or non-smoker? ");
-            policy.setSmokingStatus(keyboard.nextLine());
+                    if (inputFile.hasNextLine())
+                    {
+                        inputFile.nextLine();
+                    }
 
-            System.out.print("Please enter the policyholder's height (in inches): ");
-            policy.setHeight(keyboard.nextDouble());
+                    policies.add(policy);
+                }
+            }
 
-            System.out.print("Please enter the policyholder's weight (in pounds): ");
-            policy.setWeight(keyboard.nextDouble());
+            inputFile.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println("The Policy Information File was not found. :(");
+        }
 
-            keyboard.nextLine(); 
+        int smokerCount = 0;
+        int nonSmokerCount = 0;
 
+        for (Policy policy : policies)
+        {
             double bmi = policy.calculateBMI();
             double price = policy.calculatePrice();
 
@@ -49,13 +74,22 @@ public class InsuranceCalcuator
             System.out.println("Smoking Status: " + policy.getSmokingStatus());
             System.out.println("Height: " + policy.getHeight() + " inches");
             System.out.println("Weight: " + policy.getWeight() + " lbs");
-            System.out.println("BMI: " + bmi);
-            System.out.println("Policy Price: $" + price);
+            System.out.printf("BMI: %.2f%n", bmi);
+            System.out.printf("Policy Price: $%.2f%n", price);
             System.out.println("|---------------------------|");
             System.out.println();
+
+            if (policy.getSmokingStatus().equalsIgnoreCase("smoker"))
+            {
+                smokerCount = smokerCount + 1;
+            }
+            else
+            {
+                nonSmokerCount = nonSmokerCount + 1;
+            }
         }
 
-        System.out.println("You have finished using the Insurance Policy Calculator!");
-        keyboard.close();
+        System.out.println("The number of policies with a smoker is: " + smokerCount);
+        System.out.println("The number of policies with a non-smoker is: " + nonSmokerCount);
     }
 }

@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class InsuranceCalcuator
+public class PolicyDemo
 {
     public static void main(String[] args)
     {

@@ -256,4 +256,12 @@ public class Policy
 
         return price;
     }
+
+    public String toString()
+    {
+        return "Policy Number: " + policyNumber + "\n\n" +
+               "Provider Name: " + providerName + "\n\n" +
+               policyHolder + "\n\n" +
+               String.format("Policy Price: $%.2f", calculatePrice());
+    }
 }
